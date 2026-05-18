@@ -8,10 +8,8 @@ class Cliente(models.Model):
 
     primer_nombre = models.CharField(max_length=100, blank=False, unique=False)
     segundo_nombre = models.CharField(max_length=100, blank=True, unique=False)
-    primer_apellido = models.CharField(
-        max_length=100, blank=False, unique=False)
-    segundo_apellido = models.CharField(
-        max_length=100, blank=True, unique=False)
+    primer_apellido = models.CharField(max_length=100, blank=False, unique=False)
+    segundo_apellido = models.CharField(max_length=100, blank=True, unique=False)
     telefono = models.CharField(max_length=12, blank=False, unique=True)
     cedula = models.CharField(max_length=10, blank=False, unique=True)
     creado_en = models.DateField(auto_now_add=True)

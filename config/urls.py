@@ -32,6 +32,9 @@ urlpatterns = [
     path('api/', include('apps.pago_microservice.interface.api.routers')),
     path('api/', include('apps.destino_turistico_microservice.interface.api.routers')),
     path('api/', include('apps.paquete_turistico_microservice.interface.api.routers')),
+    path('api/', include('apps.cliente_microservice.interface.api.routers')),
+    path('api/', include('apps.reserva_microservice.interface.api.routers')),
+    path('api/', include('apps.paqueteTuristico_servicio_microservice.interface.api.routers')),
     path('api/', include('apps.authentication_microservice.interface.api.routers')),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
