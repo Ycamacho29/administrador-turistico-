@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from dataclasses import asdict
 
@@ -21,6 +22,23 @@ class DestinoTuristicoViewSet(viewsets.ViewSet):
         # Inyección de dependencias: Repo -> UseCase
         self.repository = DestinoTuristicoRepository()
         self.use_cases = DestinoTuristicoUseCases(self.repository)
+
+
+    def get_permissions(self):
+        """
+        Sobreescribe las restricciones globales de Django REST Framework
+        dependiendo de la acción que ejecute el cliente.
+        """
+        # 'list' corresponde al GET general (Ver todos)
+        # 'retrieve' corresponde al GET por ID (Ver detalle de uno)
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [AllowAny]
+        else:
+            # 'create' (POST), 'update' (PUT/PATCH), 'destroy' (DELETE) exigen JWT
+            permission_classes = [IsAuthenticated]
+            
+        # Retornamos las instancias de los permisos mapeados
+        return [permission() for permission in permission_classes]
 
     def list(self, request):
         response_dto = self.use_cases.get_destinos_turisticos()

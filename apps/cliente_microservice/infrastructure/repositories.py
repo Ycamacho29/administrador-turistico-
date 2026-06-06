@@ -1,5 +1,6 @@
 from datetime import datetime
 from core_models.models.Cliente import Cliente
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -9,17 +10,17 @@ class ClienteRepository:
     Esta capa aísla la lógica de negocio de la base de datos.
     """
 
+    def __init__(self):
+        self.model = Cliente
+
     def guardar_cliente(self, datos: dict) -> Cliente:
         """
         Realiza la persistencia física de un nuevo cliente en la base de datos.
-
-        Esta es una implementación técnica que utiliza el ORM de Django para 
-        insertar un registro en la tabla 'ciudades'. Actúa como el adaptador 
-        final entre los datos de la aplicación y el motor de base de datos.
         """
+        instancia_user = User.objects.get(id=datos.get('user_id'))
 
-        # Guardamos el nuevo Cliente
         nuevo_cliente = Cliente.objects.create(
+            user=instancia_user,
             primer_nombre=datos.get('primer_nombre'),
             segundo_nombre=datos.get('segundo_nombre'),
             primer_apellido=datos.get('primer_apellido'),
@@ -30,10 +31,10 @@ class ClienteRepository:
 
         return nuevo_cliente
 
-    def obtener_por_id(self, cliente_id: int) -> Cliente:
+    def obtener_por_id(self, user_id: int) -> Cliente:
         """Busca un Cliente por su clave primaria"""
         try:
-            return Cliente.objects.get(id=cliente_id)
+            return Cliente.objects.get(user_id=user_id)
         except Cliente.DoesNotExist:
             return None
 

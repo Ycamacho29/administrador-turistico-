@@ -30,12 +30,15 @@ class ClienteUseCases:
         except Exception as e:
             return ResponseDTO.error(str(e))
 
-    def get_cliente(self, cliente_id: int) -> ResponseDTO:
-        cliente = self.repository.obtener_por_id(cliente_id)
+    def get_cliente(self, user_id: int) -> ResponseDTO:
+        cliente = self.repository.obtener_por_id(user_id)
         if not cliente:
             return ResponseDTO.error("Cliente no encontrado", "404")
 
         data = {
+            "user": {
+                "id": cliente.user.id,
+            },
             "id": cliente.id,
             "primer_nombre": cliente.primer_nombre,
             "segundo_nombre": cliente.segundo_nombre,
@@ -52,6 +55,11 @@ class ClienteUseCases:
         clientes = self.repository.listar_todos()
         lista_data = [
             {
+                "user": {
+                    "id": c.user.id,
+                    "username": c.user.username,
+                    "email": c.user.email,
+                },
                 "id": c.id,
                 "primer_nombre": c.primer_nombre,
                 "segundo_nombre": c.segundo_nombre,

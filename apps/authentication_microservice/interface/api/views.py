@@ -6,12 +6,13 @@ from dataclasses import asdict
 
 from apps.authentication_microservice.application.use_cases import AuthUseCases
 from apps.authentication_microservice.domain.entities.request import RequestDTO
+from apps.cliente_microservice.infrastructure.repositories import ClienteRepository
 from apps.authentication_microservice.interface.serializers.login_serializers import LoginSerializer
 from apps.authentication_microservice.interface.serializers.register_serializers import RegisterSerializer
 from apps.authentication_microservice.interface.serializers.logout_serializers import LogoutSerializer
 
 class AuthViewSet(viewsets.ViewSet):
-    use_cases = AuthUseCases()
+    use_cases = AuthUseCases(ClienteRepository)
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def login(self, request):

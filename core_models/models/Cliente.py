@@ -1,11 +1,19 @@
 '''Modelo de la Tabla clientes'''
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Cliente(models.Model):
     '''Clase que Mapea la Tabla clientes'''
 
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='cliente_perfil', # Permite acceder al cliente desde el usuario (user.cliente_perfil)
+        null=True,                     # Permite null temporalmente para no romper datos existentes
+        blank=True
+    )
     primer_nombre = models.CharField(max_length=100, blank=False, unique=False)
     segundo_nombre = models.CharField(max_length=100, blank=True, unique=False)
     primer_apellido = models.CharField(max_length=100, blank=False, unique=False)

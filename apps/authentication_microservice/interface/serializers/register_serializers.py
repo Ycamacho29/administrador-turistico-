@@ -8,6 +8,14 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True, validators=[validate_password])
     password_confirm = serializers.CharField(required=True, write_only=True)
 
+    # Datos obligatorios para tu tabla Cliente
+    primer_nombre = serializers.CharField(required=True)
+    segundo_nombre = serializers.CharField(required=False, allow_blank=True, default="")
+    primer_apellido = serializers.CharField(required=True)
+    segundo_apellido = serializers.CharField(required=False, allow_blank=True, default="")
+    cedula = serializers.CharField(required=True)
+    telefono = serializers.CharField(required=True)
+
     def validate(self, data):
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({"password": "Las contraseñas no coinciden."})
