@@ -41,9 +41,13 @@ class PaqueteTuristicoViewSet(viewsets.ViewSet):
         '''
         Crea un nuevo Paquete Turistico en el sistema.
         '''
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
+
 
         # Validar el JSON de entrada con el serializador
-        serializer = PaqueteTuristicoCreateSerializer(data=request.data)
+        serializer = PaqueteTuristicoCreateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         # Crear un Objeto Request con los datos validos
@@ -63,9 +67,12 @@ class PaqueteTuristicoViewSet(viewsets.ViewSet):
         '''
         Actualiza un Paquete Turistico en el Sistema
         '''
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
 
         # Validar los Datos de Entrada
-        serializer = PaqueteTuristicoUpdateSerializer(data=request.data)
+        serializer = PaqueteTuristicoUpdateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         request_dto = RequestDTO.of(

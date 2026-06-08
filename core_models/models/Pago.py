@@ -2,6 +2,7 @@
 
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.EstatusPago import EstatusPago
 from core_models.models.MetodoPago import MetodoPago
 from core_models.models.Moneda import Moneda
@@ -17,9 +18,11 @@ class Pago(models.Model):
     monto_bs = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
     monto_otra_moneda = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
     taza_bs = models.DecimalField(max_digits=10, decimal_places=2, blank=True)
-    comprobante = models.TextField(blank=False)
+    comprobante = models.ImageField(upload_to='comprabantes/', blank=True, null=True)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Pago'

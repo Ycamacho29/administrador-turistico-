@@ -1,6 +1,7 @@
 '''Modelo de la Tabla reservas'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.Pago import Pago
 from core_models.models.PaqueteTuristico import PaqueteTuristico
 from core_models.models.Cliente import Cliente
@@ -18,6 +19,8 @@ class Reserva(models.Model):
     estatus_id = models.ForeignKey(EstatusReserva, on_delete=models.PROTECT)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Reserva'

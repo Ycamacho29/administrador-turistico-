@@ -71,6 +71,14 @@ class PaqueteTuristicoUpdateSerializer(serializers.Serializer):
         min_length=1
     )
 
+    imagen_principal = serializers.ImageField(
+        required=False,
+        allow_null=True,
+        error_messages={
+            'invalid': 'El archivo subido no es una imagen válida o está corrupto.'
+        }
+    )
+
     def validate_descripcion(self, value):
         """Garantiza que retorne un string vacío si no hay contenido."""
         return value.strip() if value else ""
@@ -80,6 +88,23 @@ class PaqueteTuristicoUpdateSerializer(serializers.Serializer):
 
     def validate_estatus(self, value):
         return value.strip().upper()
+    
+    def validate_imagen_principal(self, value):
+        """Validaciones personalizadas para el tamaño o peso del archivo."""
+        if value:
+            # Validar que la imagen no pese más de 2MB (2 * 1024 * 1024 bytes)
+            max_size = 2 * 1024 * 1024
+            if value.size > max_size:
+                raise serializers.ValidationError(
+                    "La imagen es muy pesada. El tamaño máximo permitido es de 2MB.")
+
+            # Validar extensiones explícitas para restringir formatos específicos
+            extension = value.name.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png', 'webp']:
+                raise serializers.ValidationError(
+                    "Formato de imagen no permitido. Usa JPG, JPEG, PNG o WEBP.")
+
+        return value
 
     def validate(self, data):
         """

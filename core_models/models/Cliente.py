@@ -1,6 +1,7 @@
 '''Modelo de la Tabla clientes'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from django.contrib.auth.models import User
 
 
@@ -22,6 +23,8 @@ class Cliente(models.Model):
     cedula = models.CharField(max_length=10, blank=False, unique=True)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Cliente'

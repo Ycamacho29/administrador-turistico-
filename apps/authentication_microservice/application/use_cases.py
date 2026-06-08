@@ -17,6 +17,20 @@ class AuthUseCases:
             username=data['username'], password=data['password'])
 
         if user is not None:
+            # 1. Extraemos los roles reales del usuario desde la base de datos
+            roles_usuario = list(user.groups.values_list('name', flat=True))
+
+            # 2. Si es superusuario de Django y no tiene grupos, le asignamos un rol virtual
+            if user.is_superuser and not roles_usuario:
+                roles_usuario = ['Superadmin']
+
+            # 3. Generamos los tokens
+            refresh = RefreshToken.for_user(user)
+            
+            refresh['roles'] = roles_usuario
+            refresh['username'] = user.username
+
+        if user is not None:
             refresh = RefreshToken.for_user(user)
             payload = {
                 'refresh': str(refresh),
@@ -24,7 +38,8 @@ class AuthUseCases:
                 'user': {
                     'id': user.id,
                     'username': user.username,
-                    'email': user.email
+                    'email': user.email,
+                    'roles': roles_usuario
                 }
             }
             return ResponseDTO.success(data=payload, mensaje="Login exitoso")

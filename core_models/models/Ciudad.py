@@ -1,6 +1,7 @@
 '''Modelo de la Tabla ciudades'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.Pais import Pais
 
 
@@ -12,6 +13,8 @@ class Ciudad(models.Model):
     pais_id = models.ForeignKey(Pais, on_delete=models.PROTECT)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Ciudad'

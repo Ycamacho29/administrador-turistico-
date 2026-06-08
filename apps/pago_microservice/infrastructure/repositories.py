@@ -12,7 +12,7 @@ class PagoRepository:
     Esta capa aísla la lógica de negocio de la base de datos.
     """
 
-    def guardar_pago(self, datos: dict) -> Pago:
+    def guardar_pago(self, datos: dict, archivo_imagen=None) -> Pago:
         """
         Realiza la persistencia física de una nueva ciudad en la base de datos.
 
@@ -33,6 +33,7 @@ class PagoRepository:
             monto_bs=datos.get('monto_bs'),
             monto_otra_moneda=datos.get('monto_otra_moneda'),
             taza_bs=datos.get('taza_bs'),
+            comprobante=archivo_imagen
         )
 
         return nuevo_pago
@@ -48,7 +49,7 @@ class PagoRepository:
         """Retorna un QuerySet con todos los pagos"""
         return Pago.objects.all().order_by('-id')
 
-    def actualizar_pago(self, pago_id: int, datos: dict) -> Pago:
+    def actualizar_pago(self, pago_id: int, datos: dict, archivo_imagen=None) -> Pago:
         """Actualiza los campos de un pago existente"""
         pago = Pago.objects.get(id=pago_id)
         metodo_pago = MetodoPago.objects.get(id=datos.get('metodo_pago_id'))
@@ -63,6 +64,9 @@ class PagoRepository:
         pago.monto_otra_moneda = datos.get('monto_otra_moneda')
         pago.taza_bs = datos.get('taza_bs')
         pago.modificado_en = datetime.now()
+
+        if archivo_imagen:
+            pago.comprobante = archivo_imagen
 
         pago.save()
         return pago

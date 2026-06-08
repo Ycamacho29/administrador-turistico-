@@ -1,7 +1,7 @@
 '''Modelo de la Tabla tipos_paquetes'''
 
 from django.db import models
-
+from simple_history.models import HistoricalRecords
 
 class TipoPaquete(models.Model):
     '''Clase que Mapea la Tabla tipos_paquetes'''
@@ -11,6 +11,8 @@ class TipoPaquete(models.Model):
     estatus = models.CharField(max_length=1, default='A')
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Tipo_Paquete'

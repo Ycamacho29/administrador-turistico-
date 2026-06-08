@@ -46,8 +46,12 @@ class PagoViewSet(viewsets.ViewSet):
         caso de uso correspondiente.
         '''
 
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
+
         # Validar el JSON de entrada con el serializador
-        serializer = PagoCreateSerializer(data=request.data)
+        serializer = PagoCreateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         # Crear un Objeto Request con los datos validos
@@ -67,9 +71,12 @@ class PagoViewSet(viewsets.ViewSet):
         '''
         Actualiza un Pago en el Sistema
         '''
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
 
         # Validar los Datos de Entrada
-        serializer = PagoUpdateSerializer(data=request.data)
+        serializer = PagoUpdateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         request_dto = RequestDTO.of(

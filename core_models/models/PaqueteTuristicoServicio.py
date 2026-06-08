@@ -1,6 +1,7 @@
 '''Modelo de la Tabla paquetesTuristicos_servicios'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.PaqueteTuristico import PaqueteTuristico
 from core_models.models.Servicio import Servicio
 
@@ -11,6 +12,8 @@ class PaqueteTuristicoServicio(models.Model):
     servico_id = models.ForeignKey(Servicio, on_delete=models.PROTECT)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'PaqueteTuristico_Servicio'

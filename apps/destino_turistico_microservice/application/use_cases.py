@@ -15,7 +15,9 @@ class DestinoTuristicoUseCases:
             # Lógica de negocio
             datos = request_dto.data
 
-            nuevo_destino_turistico = self.repository.guardar_destino_turistico(datos)
+            archivo_imagen = datos.get('imagen_principal', None)
+
+            nuevo_destino_turistico = self.repository.guardar_destino_turistico(datos, archivo_imagen)
 
             return ResponseDTO.success(
                 data={
@@ -32,10 +34,14 @@ class DestinoTuristicoUseCases:
         if not destino_turistico:
             return ResponseDTO.error("Destino Turistico no encontrado", "404")
 
+        # Construimos la URL pública de la imagen de forma segura si el registro la tiene
+        url_imagen = destino_turistico.imagen_principal.url if destino_turistico.imagen_principal else None
+
         data = {
             "id": destino_turistico.id,
             "nombre": destino_turistico.nombre,
             "descripcion": destino_turistico.descripcion,
+            "imagen_principal": url_imagen,
             "pais": {
                 "id": destino_turistico.pais_id.id,
                 "nombre": destino_turistico.pais_id.nombre,
@@ -78,6 +84,7 @@ class DestinoTuristicoUseCases:
                 "id": dt.id,
                 "nombre": dt.nombre,
                 "descripcion": dt.descripcion,
+                "imagen_principal": dt.imagen_principal.url if dt.imagen_principal else None,
                 "pais": {
                     "id": dt.pais_id.id,
                     "nombre": dt.pais_id.nombre,
@@ -122,8 +129,10 @@ class DestinoTuristicoUseCases:
             if not destino_turistico_existente:
                 return ResponseDTO.error("Destino Turistico no encontrado para actualizar", "404")
 
-            destino_turistico_actualizado = self.repository.actualizar_destino_turistico(
-                destino_turistico_id, request_dto.data)
+            datos = request_dto.data
+            archivo_imagen = datos.get('imagen_principal', None)
+
+            destino_turistico_actualizado = self.repository.actualizar_destino_turistico(destino_turistico_id, datos, archivo_imagen)
             return ResponseDTO.success(
                 data={"id": destino_turistico_actualizado.id},
                 mensaje="Destino Turistico actualizado correctamente"

@@ -31,26 +31,28 @@ SECRET_KEY = 'django-insecure-f-o(l+5^ao^ijzrys$39b7v_lb=gu-olc*q1w_p%rcn*(n_56&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core_models',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'apps.ciudad_microservice',
+    'simple_history',
+    'core_models',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -150,5 +153,40 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+# Orígenes permitidos para comunicarse con la API
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",   # Variante por defecto en Angular / React
+    "http://127.0.0.1:4200",   # Variante numérica para navegadores estrictos
+]
 
+# O opcionalmente, si quieres permitir credenciales (Cookies, Auth Headers)
+CORS_ALLOW_CREDENTIALS = True
 
+# CORS_ALLOW_METHODS = [
+#     "DELETE",
+#     "GET",
+#     "OPTIONS",
+#     "PATCH",
+#     "POST",
+#     "PUT",
+# ]
+
+# CORS_ALLOW_HEADERS = [
+#     "accept",
+#     "accept-encoding",
+#     "authorization",
+#     "content-type",
+#     "dnt",
+#     "origin",
+#     "user-agent",
+#     "x-csrftoken",
+#     "x-requested-with",
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Carpeta física en el servidor donde se guardarán las imágenes subidas
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL pública con la que el Frontend consumirá los archivos
+MEDIA_URL = '/media/'

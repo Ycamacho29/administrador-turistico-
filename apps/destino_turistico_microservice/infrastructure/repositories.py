@@ -13,7 +13,7 @@ class DestinoTuristicoRepository:
     Esta capa aísla la lógica de negocio de la base de datos.
     """
 
-    def guardar_destino_turistico(self, datos: dict) -> DestinoTuristico:
+    def guardar_destino_turistico(self, datos: dict, archivo_imagen=None) -> DestinoTuristico:
         """
         Realiza la persistencia física de un nuevo nuevo destino turistico en la base de datos.
 
@@ -34,7 +34,8 @@ class DestinoTuristicoRepository:
             pais_id=instancia_pais,
             ciudad_id=instancia_ciudad,
             idioma_principal_id=instancia_idioma,
-            moneda_local_id=instancia_moneda
+            moneda_local_id=instancia_moneda,
+            imagen_principal=archivo_imagen
         )
 
         return nuevo_destino_turistico
@@ -50,7 +51,7 @@ class DestinoTuristicoRepository:
         """Retorna un QuerySet con todos los Destino Turisticos"""
         return DestinoTuristico.objects.all().order_by('-id')
 
-    def actualizar_destino_turistico(self, destino_turistico_id: int, datos: dict) -> DestinoTuristico:
+    def actualizar_destino_turistico(self, destino_turistico_id: int, datos: dict, archivo_imagen=None) -> DestinoTuristico:
         """Actualiza los campos de un destino turistico"""
         destino_turistico = DestinoTuristico.objects.get(id=destino_turistico_id)
 
@@ -68,6 +69,9 @@ class DestinoTuristicoRepository:
         destino_turistico.moneda_local_id = moneda
         destino_turistico.estatus = datos.get('estatus')
         destino_turistico.modificado_en = datetime.now()
+
+        if archivo_imagen:
+            destino_turistico.imagen_principal = archivo_imagen
 
         destino_turistico.save()
         return destino_turistico

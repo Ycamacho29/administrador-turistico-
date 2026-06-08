@@ -15,7 +15,9 @@ class PagoUseCases:
             # Lógica de negocio
             datos = request_dto.data
 
-            nuevo_pago = self.repository.guardar_pago(datos)
+            archivo_imagen = datos.get('comprobante', None)
+
+            nuevo_pago = self.repository.guardar_pago(datos, archivo_imagen)
 
             return ResponseDTO.success(
                 data={
@@ -33,9 +35,13 @@ class PagoUseCases:
         if not pago:
             return ResponseDTO.error("Pago no encontrado", "404")
 
+        # Construimos la URL pública de la imagen de forma segura si el registro la tiene
+        url_imagen = pago.comprobante.url if pago.comprobante else None
+
         data = {
             "id": pago.id,
             "codigo_referencia": pago.codigo_referencia,
+            "comprobante": url_imagen,
             "metodo_pago": {
                 "id": pago.metodo_pago_id.id,
                 "nombre": pago.metodo_pago_id.nombre,
@@ -73,6 +79,7 @@ class PagoUseCases:
             {
                 "id": p.id,
                 "codigo_referencia": p.codigo_referencia,
+                "comprobante": p.comprobante.url if p.comprobante else None,
                 "metodo_pago": {
                     "id": p.metodo_pago_id.id,
                     "nombre": p.metodo_pago_id.nombre,
@@ -113,7 +120,10 @@ class PagoUseCases:
             if not pago_existente:
                 return ResponseDTO.error("Pago no encontrado para actualizar", "404")
 
-            pago_actualizado = self.repository.actualizar_pago(pago_id, request_dto.data)
+            datos = request_dto.data
+            archivo_imagen = datos.get('comprobante', None)
+
+            pago_actualizado = self.repository.actualizar_pago(pago_id, datos, archivo_imagen)
             return ResponseDTO.success(
                 data={"id": pago_actualizado.id},
                 mensaje="Pago actualizado correctamente"

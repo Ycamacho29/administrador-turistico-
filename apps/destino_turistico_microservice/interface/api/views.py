@@ -63,9 +63,12 @@ class DestinoTuristicoViewSet(viewsets.ViewSet):
         información a un DTO de dominio y delega la persistencia al 
         caso de uso correspondiente.
         '''
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
 
         # Validar el JSON de entrada con el serializador
-        serializer = DestinoTuristicoCreateSerializer(data=request.data)
+        serializer = DestinoTuristicoCreateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         # Crear un Objeto Request con los datos validos
@@ -85,9 +88,12 @@ class DestinoTuristicoViewSet(viewsets.ViewSet):
         '''
         Actualiza un Destino Turistico en el Sistema
         '''
+        datos_completos = request.data.copy()
+        if request.FILES:
+            datos_completos.update(request.FILES)
 
         # Validar los Datos de Entrada
-        serializer = DestinoTuristicoUpdateSerializer(data=request.data)
+        serializer = DestinoTuristicoUpdateSerializer(data=datos_completos)
         serializer.is_valid(raise_exception=True)
 
         request_dto = RequestDTO.of(

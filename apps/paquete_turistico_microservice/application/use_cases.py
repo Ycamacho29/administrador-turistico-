@@ -15,7 +15,9 @@ class PaqueteTuristicoUseCases:
             # Lógica de negocio
             datos = request_dto.data
 
-            nuevo_paqutete_turistico = self.repository.guardar_paquete_turistico(datos)
+            archivo_imagen = datos.get('imagen_principal', None)
+
+            nuevo_paqutete_turistico = self.repository.guardar_paquete_turistico(datos, archivo_imagen)
 
             return ResponseDTO.success(
                 data={
@@ -32,10 +34,14 @@ class PaqueteTuristicoUseCases:
         if not paquete_turistico_turistico:
             return ResponseDTO.error("Paquete Turistico no encontrado", "404")
 
+        # Construimos la URL pública de la imagen de forma segura si el registro la tiene
+        url_imagen = paquete_turistico_turistico.imagen_principal.url if paquete_turistico_turistico.imagen_principal else None
+
         data = {
             "id": paquete_turistico_turistico.id,
             "nombre": paquete_turistico_turistico.nombre,
             "descripcion": paquete_turistico_turistico.descripcion,
+            "imagen_principal": url_imagen,
             "destino": {
                 "id": paquete_turistico_turistico.destino_id.id,
                 "nombre": paquete_turistico_turistico.destino_id.nombre,
@@ -68,6 +74,7 @@ class PaqueteTuristicoUseCases:
                 "id": pt.id,
                 "nombre": pt.nombre,
                 "descripcion": pt.descripcion,
+                "imagen_principal": pt.imagen_principal.url if pt.imagen_principal else None,
                 "destino": {
                     "id": pt.destino_id.id,
                     "nombre": pt.destino_id.nombre,
@@ -102,7 +109,10 @@ class PaqueteTuristicoUseCases:
             if not paquete_turistico_existente:
                 return ResponseDTO.error("Paquete Turistico no encontrado para actualizar", "404")
 
-            paquete_turistico_actualizado = self.repository.actualizar_paquete_turistico(paquete_turistico_id, request_dto.data)
+            datos = request_dto.data
+            archivo_imagen = datos.get('imagen_principal', None)
+
+            paquete_turistico_actualizado = self.repository.actualizar_paquete_turistico(paquete_turistico_id, datos, archivo_imagen)
             return ResponseDTO.success(
                 data={"id": paquete_turistico_actualizado.id},
                 mensaje="Paquete Turistico actualizado correctamente"

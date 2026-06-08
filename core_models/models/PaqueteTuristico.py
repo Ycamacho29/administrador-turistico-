@@ -1,6 +1,7 @@
 '''Modelo de la Tabla paquetes_turisticos'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.DestinoTuristico import DestinoTuristico
 from core_models.models.TipoPaquete import TipoPaquete
 
@@ -18,9 +19,11 @@ class PaqueteTuristico(models.Model):
     fecha_fin = models.DateField()
     disponible = models.CharField(max_length=1, default='A')
     estatus = models.CharField(max_length=1, default='A')
-    imagen_principal = models.TextField(blank=True)
+    imagen_principal = models.ImageField(upload_to='paquetes-turisticos/', blank=True, null=True)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Paquete_Turistico'

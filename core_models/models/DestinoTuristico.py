@@ -1,6 +1,7 @@
 '''Modelo de la Tabla destinos_turisticos'''
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 from core_models.models.Pais import Pais
 from core_models.models.Ciudad import Ciudad
 from core_models.models.Idioma import Idioma
@@ -16,9 +17,11 @@ class DestinoTuristico(models.Model):
     idioma_principal_id = models.ForeignKey(Idioma, on_delete=models.PROTECT)
     moneda_local_id = models.ForeignKey(Moneda, on_delete=models.PROTECT)
     estatus = models.CharField(max_length=1, default='A')
-    imagen_principal = models.TextField(blank=True)
+    imagen_principal = models.ImageField(upload_to='destinos-turisticos/', blank=True, null=True)
     creado_en = models.DateField(auto_now_add=True)
     modificado_en = models.DateField(auto_now=True)
+
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Destino_Turistico'
