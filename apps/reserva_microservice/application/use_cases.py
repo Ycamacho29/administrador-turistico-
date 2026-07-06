@@ -113,6 +113,97 @@ class ReservaUseCases:
 
         return ResponseDTO.success(data=reserva_json)
 
+    @staticmethod
+    def get_reserva_x_id_pago(pago_id: int) -> ResponseDTO:
+
+        from apps.reserva_microservice.infrastructure.repositories import ReservaRepository
+        repository = ReservaRepository()
+
+        reserva = repository.obtener_por_id_pago(pago_id)
+        if not reserva:
+            return ResponseDTO.error("Reserva no encontrada", "404")
+
+        # 1. Construimos la estructura base con los datos obligatorios
+        reserva_json = {
+            "id": reserva.id,
+            "codigo": reserva.codigo,
+            "paquete_turistico": {
+                "id": reserva.paquete_id.id,
+                "nombre": reserva.paquete_id.nombre,
+                "descripcion": reserva.paquete_id.descripcion,
+                "destino": {
+                    "id": reserva.paquete_id.destino_id.id,
+                    "nombre": reserva.paquete_id.destino_id.nombre,
+                    "descripcion": reserva.paquete_id.destino_id.descripcion,
+                },
+                "tipo_paquete": {
+                    "id": reserva.paquete_id.tipo_paquete_id.id,
+                    "nombre": reserva.paquete_id.tipo_paquete_id.nombre,
+                    "descripcion": reserva.paquete_id.tipo_paquete_id.descripcion,
+                    "estatus": reserva.paquete_id.tipo_paquete_id.estatus,
+                    "creado_en": reserva.paquete_id.tipo_paquete_id.creado_en,
+                    "modificado_en": reserva.paquete_id.tipo_paquete_id.modificado_en,
+                },
+                "duracion_dias": reserva.paquete_id.duracion_dias,
+                "precio_base_bs": reserva.paquete_id.precio_base_bs,
+                "capacidad_maxima_integrantes": reserva.paquete_id.capacidad_maxima_integrantes,
+                "fecha_inico": reserva.paquete_id.fecha_inico,
+                "fecha_fin": reserva.paquete_id.fecha_fin,
+                "disponible": reserva.paquete_id.disponible,
+                "estatus": reserva.paquete_id.estatus,
+            },
+            "cliente": {
+                "id": reserva.cliente_id.id,
+                "primer_nombre": reserva.cliente_id.primer_nombre,
+                "segundo_nombre": reserva.cliente_id.segundo_nombre,
+                "primer_apellido": reserva.cliente_id.primer_apellido,
+                "segundo_apellido": reserva.cliente_id.segundo_apellido,
+                "telefono": reserva.cliente_id.telefono,
+                "cedula": reserva.cliente_id.cedula,
+                "creado_en": reserva.cliente_id.creado_en,
+                "modificado_en": reserva.cliente_id.modificado_en
+            },
+            "cantidad_personas": reserva.cantidad_personas,
+            "estatus": {
+                "id": reserva.estatus_id.id,
+                "nombre": reserva.estatus_id.nombre,
+                "descripcion": reserva.estatus_id.descripcion,
+                "estatus": reserva.estatus_id.estatus,
+            },
+            "creado_en": reserva.creado_en,
+            "modificado_en": reserva.modificado_en
+        }
+
+        # 2. Validamos si existe la relación de pago antes de agregar la llave
+        if reserva.pago_id is not None:
+            reserva_json["pago"] = {
+                "id": reserva.pago_id.id,
+                "codigo_referencia": reserva.pago_id.codigo_referencia,
+                "metodo_pago": {
+                    "id": reserva.pago_id.metodo_pago_id.id,
+                    "nombre": reserva.pago_id.metodo_pago_id.nombre,
+                    "estatus": reserva.pago_id.metodo_pago_id.estatus,
+                },
+                "estatus_pago": {
+                    "id": reserva.pago_id.estatus_pago_id.id,
+                    "nombre": reserva.pago_id.estatus_pago_id.nombre,
+                    "descripcion": reserva.pago_id.estatus_pago_id.descripcion,
+                    "estatus": reserva.pago_id.estatus_pago_id.estatus,
+                },
+                "moneda": {
+                    "id": reserva.pago_id.moneda_id.id,
+                    "nombre": reserva.pago_id.moneda_id.nombre,
+                    "acronimo": reserva.pago_id.moneda_id.acronimo,
+                    "estatus": reserva.pago_id.moneda_id.estatus
+                },
+                "monto_bs": reserva.pago_id.monto_bs,
+                "monto_otra_moneda": reserva.pago_id.monto_otra_moneda,
+                "taza_bs": reserva.pago_id.taza_bs,
+            }
+
+        return ResponseDTO.success(data=reserva_json)
+
+
     def get_reservas(self) -> ResponseDTO:
         reservas = self.repository.listar_todas()
         lista_data = []

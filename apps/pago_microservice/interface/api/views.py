@@ -71,6 +71,7 @@ class PagoViewSet(viewsets.ViewSet):
         '''
         Actualiza un Pago en el Sistema
         '''
+        
         datos_completos = request.data.copy()
         if request.FILES:
             datos_completos.update(request.FILES)
@@ -81,8 +82,9 @@ class PagoViewSet(viewsets.ViewSet):
 
         request_dto = RequestDTO.of(
             data=serializer.validated_data,
-            usuario=str(request.user)
+            usuario=str(request.user.email)
         )
+
         response_dto = self.use_cases.update_pago(int(pk), request_dto)
 
         if response_dto.estatus == "error":

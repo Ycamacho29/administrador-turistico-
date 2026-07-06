@@ -48,6 +48,13 @@ class ReservaRepository:
             return Reserva.objects.get(id=reserva_id)
         except Reserva.DoesNotExist:
             return None
+        
+    def obtener_por_id_pago(self, pago_id: int) -> Reserva:
+        """Busca una Reserva por el id de su pago"""
+        try:
+            return Reserva.objects.get(pago_id=pago_id)
+        except Reserva.DoesNotExist:
+            return None
 
     def listar_todas(self):
         """Retorna un QuerySet con todas las Reservas"""

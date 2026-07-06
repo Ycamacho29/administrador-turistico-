@@ -68,7 +68,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -190,3 +192,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # URL pública con la que el Frontend consumirá los archivos
 MEDIA_URL = '/media/'
+
+# Configuración de Envío de Correos SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'                 # Servidor SMTP (ej: Gmail)
+EMAIL_PORT = os.getenv('EMAIL_PORT')                   # Puerto estándar para TLS
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')             # Cifrado de seguridad
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')         # Tu correo desde donde saldrán los mensajes
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD') # Contraseña
+DEFAULT_FROM_EMAIL = f'"Administrador Turistico" <{EMAIL_HOST_USER}>'
+

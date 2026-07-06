@@ -1,4 +1,7 @@
+import pprint
 from apps.pago_microservice.domain.entities.response import ResponseDTO
+from apps.reserva_microservice.application.use_cases import ReservaUseCases
+from apps.core.services.email_service import EmailService
 
 
 class PagoUseCases:
@@ -123,7 +126,18 @@ class PagoUseCases:
             datos = request_dto.data
             archivo_imagen = datos.get('comprobante', None)
 
-            pago_actualizado = self.repository.actualizar_pago(pago_id, datos, archivo_imagen)
+            pago_actualizado = self.repository.actualizar_pago(
+                pago_id, datos, archivo_imagen)
+
+            response_reserva = ReservaUseCases.get_reserva_x_id_pago(pago_id)
+
+            datos_viaje = response_reserva.data
+
+            correo_cliente = request_dto.metadata.usuario
+
+            EmailService.enviar_confirmacion_viaje(
+                email_cliente=correo_cliente, datos_viaje=datos_viaje)
+
             return ResponseDTO.success(
                 data={"id": pago_actualizado.id},
                 mensaje="Pago actualizado correctamente"
